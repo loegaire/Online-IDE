@@ -7,7 +7,7 @@ import 'codemirror/addon/edit/closebrackets';
 import React, { useState,  useEffect } from 'react';
 
 function App() {
-  const [openedEditor, setOpenedEditor] = useState('html');
+  const [openedEditor, setOpenedEditor] = useState('css');
   const [html, setHtml] = useState('');
   const [css, setCss] = useState('');
   const [js, setJs] = useState('');
@@ -42,6 +42,11 @@ function App() {
         }} />
         <Button title="JavaScript" onClick={() => {
           onTabClick('js')
+        }} />
+      </div>
+      <div>
+        <Button title="Run" onClick={() => {
+          // Handle run button click
         }} />
       </div>
       <div className="editor-container">
