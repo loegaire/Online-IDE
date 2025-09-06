@@ -5,6 +5,11 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: url('gif');
+  background-size: cover;           /* cover the whole viewport */
+  background-position: center;      /* center it */
+  background-repeat: no-repeat;     /* don't tile */
+  background-attachment: fixed;     /* optional: makes it fixed during scroll */
 }
 
 code {

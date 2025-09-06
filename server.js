@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const subProcess = require('child_process')
 
-const PORT = 5000;
+const PORT = 3000;
 
 // MIME types for different file extensions
 const mimeTypes = {
@@ -31,23 +31,50 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const { type, code } = JSON.parse(body || '{}');
-        if (!['html', 'css', 'js'].includes(type) || typeof code !== 'string') {
+        if (!['html', 'css', 'js','python','cpp'].includes(type) || typeof code !== 'string') {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           return res.end(JSON.stringify({ ok: false, error: 'Invalid payload' }));
         }
-        if (type === 'js') {
-          //put run commands here----------------------------------//
-          return subProcess.exec(
-            `echo 'print("Hi from Docker")' | docker run --rm -i python:3.12 python`,//
-            (err, stdout, stderr) => {  //
-            //------------------------------------------------------//  
-            if (err) {
-              res.writeHead(500, { 'Content-Type': 'application/json' });
-              return res.end(JSON.stringify({ ok: false, error: err.message }));
-            }
+        const runInDocker = (image, cmd, code, res) => {
+          const child = subProcess.spawn(
+            'docker',
+            ['run', '--rm', '-i', image, ...cmd],
+            { stdio: ['pipe', 'pipe', 'pipe'] }
+          );
+
+          // send code into container stdin
+          child.stdin.write(code);
+          child.stdin.end();
+
+          let output = '';
+          let errorOutput = '';
+
+          child.stdout.on('data', data => (output += data.toString()));
+          child.stderr.on('data', data => (errorOutput += data.toString()));
+
+          child.on('close', () => {
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            return res.end(JSON.stringify({ ok: true, output: stdout.toString() }));
+            res.end(JSON.stringify({
+              ok: true,
+              output: output || errorOutput
+            }));
           });
+        };
+
+        if (type === 'python') {
+          return runInDocker('python:3.12', ['python'], code, res);
+        }
+
+        if (type === 'js') {
+          return runInDocker('node:22', ['node'], code, res);
+        }
+        if (type === 'cpp') {
+          return runInDocker(
+            'gcc:13',
+            ['sh', '-lc', 'cat > main.cpp && g++ -O2 -std=c++17 main.cpp -o main && ./main'],
+            code,
+            res
+          );
         }
         // html/css: still respond
         res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -91,4 +118,5 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/`);
   console.log('All set!! (^-^)');
+  console.log("Running as:", process.getuid(), process.getgid(), process.getgroups());
 });

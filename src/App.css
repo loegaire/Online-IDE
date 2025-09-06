@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  
 }
 
 .App-logo {
@@ -41,7 +42,36 @@
   text-align: left;
   margin-left: 0;
 }
-
+.editor-container .CodeMirror {
+  height: 65vh;            /* make the editor taller */
+  background-color: rgba(7, 8, 7, 0.8) !important;  /* semi-transparent so blur is visible */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px); /* Safari */
+}
+.editor-container .CodeMirror-scroll {
+  min-height: 65vh;        /* ensure the scroll area matches */
+}
+.editor-container .CodeMirror pre {
+  font-size: 15px;         /* optional: bigger text */
+  line-height: 1.5;
+}
+.output-container {
+  text-align: left;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 10px;
+  background-color: #1e1e1ee5;
+  color: #b6f1c5ff;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  overflow: auto;
+}
+.btn:hover {
+    background-color: #aef7acff;
+    color: black;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -49,4 +79,40 @@
   to {
     transform: rotate(360deg);
   }
+}
+.app-title {
+  display: inline-block;          /* shrink to content */
+  background-color: #070807ef;    /* your bg */
+  color: #b6f1c5ff;               /* your text color */
+  font-size: 24px;
+  padding: 6px 10px;              /* space around text */
+  border-radius: 8px;             /* optional rounding */
+  margin: 12px 0;                 /* spacing from others */
+}
+
+/* Gutter (line numbers) background to match */
+.editor-container .CodeMirror-gutters {
+  background-color: rgba(7, 8, 7, 0.35) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Optional: keep active line/selection readable */
+.editor-container .CodeMirror-activeline-background {
+  background: rgba(255, 255, 255, 0.199) !important;
+}
+.editor-container .CodeMirror-selected {
+  background: rgba(174, 247, 172, 0.301) !important;
+}
+.runbutton {
+  max-width: 140px; 
+  min-width: 80px; 
+  height: 30px; 
+  margin-right: 5px;
+  background-color: #1e1e1ee5;
+  color: #aef7acff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }

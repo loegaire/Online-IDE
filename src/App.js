@@ -14,12 +14,20 @@ function App() {
   const [html, setHtml] = useState('');
   const [css, setCss] = useState('');
   const [js, setJs] = useState('');
+  const [python, setPython] = useState('');
+  const [cpp, setCpp] = useState('');
   // const [srcDoc, setSrcDoc] = useState(` `); // not used
 
-  const currentType = openedEditor; // 'html' | 'css' | 'js'
-  const currentCode =
-    openedEditor === 'html' ? html :
-    openedEditor === 'css' ? css : js;
+  const currentType = openedEditor; 
+  const codeMap = {
+    html,
+    css,
+    js,
+    python,
+    cpp,
+  };
+
+  const currentCode = codeMap[openedEditor];
 
   const onTabClick = (editorName) => {
     setOpenedEditor(editorName);
@@ -27,11 +35,13 @@ function App() {
 
   return (
     <div className="App">
-      <p>Thinh's online IDE </p>
+      <h1 className="app-title">Thinh's online IDE</h1>
       <div className="tab-button-container">
         <Button title="HTML" onClick={() => onTabClick('html')} />
         <Button title="CSS" onClick={() => onTabClick('css')} />
         <Button title="JavaScript" onClick={() => onTabClick('js')} />
+        <Button title="Python" onClick={() => onTabClick('python')} />
+        <Button title="C++" onClick={() => onTabClick('cpp')} />
       </div>
       <div>
         <RunButton 
@@ -47,8 +57,12 @@ function App() {
           <Editor language="xml" value={html} setEditorState={setHtml} />
         ) : openedEditor === 'css' ? (
           <Editor language="css" value={css} setEditorState={setCss} />
-        ) : (
+        ) : openedEditor === 'js' ? (
           <Editor language="javascript" value={js} setEditorState={setJs} />
+        ) : openedEditor === 'python' ? (
+          <Editor language="python" value={python} setEditorState={setPython} />
+        ) : (
+          <Editor language="cpp" value={cpp} setEditorState={setCpp} />
         )}
       </div>
       <div className="output-container">
