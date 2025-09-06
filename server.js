@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = 3000;
+const PORT = 5000;
 
 // MIME types for different file extensions
 const mimeTypes = {
@@ -24,7 +24,33 @@ const mimeTypes = {
 const server = http.createServer((req, res) => {
   // Start with the build directory
   let filePath = path.join(__dirname, 'build', req.url);
-  
+  if (req.url === '/run' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => (body += chunk));
+    req.on('end', () => {
+      try {
+        const { type, code } = JSON.parse(body || '{}');
+        //if not listed->invalid
+        if (!['html', 'css', 'js'].includes(type) || typeof code !== 'string') {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ ok: false, error: 'Invalid payload T^T' }));
+        }
+        console.log(`[RUN] type=${type}, length=${code.length}`);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({
+          ok: true,
+          type,
+          code
+        }));
+      } 
+      //error handling
+      catch (e) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ ok: false, error: 'Bad JSON' }));
+      }
+    });
+    return;
+  }
   // If requesting root, serve index.html from build folder
   if (req.url === '/') {
     filePath = path.join(__dirname, 'build', 'index.html');
@@ -34,7 +60,8 @@ const server = http.createServer((req, res) => {
   fs.access(filePath, fs.constants.F_OK, (err) => {
     if (err) {
       // File not found - for React Router, always serve index.html
-      filePath = path.join(__dirname, 'build', 'index.html');
+      res.writeHead(404, { 'Content-Type': 'text/html' });
+      return res.end("<h1>404 Not Found</h1>") 
     }
     
     // Get file extension and content type
@@ -53,8 +80,7 @@ const server = http.createServer((req, res) => {
     });
   });
 });
-
 server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/`);
-  console.log('Serving React app from build folder');
+  console.log('All set!! (^-^');
 });

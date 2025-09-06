@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import Button from './components/Button';
 import Editor from './components/Editor';
+import RunButton from './components/RunButton';
 import 'codemirror/addon/edit/closetag';
 import 'codemirror/addon/edit/closebrackets';
 import React, { useState,  useEffect } from 'react';
@@ -12,6 +13,10 @@ function App() {
   const [css, setCss] = useState('');
   const [js, setJs] = useState('');
   const [srcDoc, setSrcDoc] = useState(` `);
+  const currentType = openedEditor; // 'html' | 'css' | 'js'
+  const currentCode =
+    openedEditor === 'html' ? html :
+    openedEditor === 'css' ? css : js;
   const onTabClick = (editorName) => {
     setOpenedEditor(editorName);
   };
@@ -45,9 +50,16 @@ function App() {
         }} />
       </div>
       <div>
-        <Button title="Run" onClick={() => {
-          // Handle run button click
-        }} />
+        <RunButton 
+          type={currentType} code={currentCode}
+          onResult={(data) => {
+            if (data?.ok) {
+              console.log('Server response:', data);
+            } else {
+              console.error('Run failed:', data);
+            }
+          }}
+        />
       </div>
       <div className="editor-container">
         {
