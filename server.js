@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const subProcess = require('child_process')
 
 const PORT = 5000;
 
@@ -30,21 +31,28 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const { type, code } = JSON.parse(body || '{}');
-        //if not listed->invalid
         if (!['html', 'css', 'js'].includes(type) || typeof code !== 'string') {
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          return res.end(JSON.stringify({ ok: false, error: 'Invalid payload T^T' }));
+          return res.end(JSON.stringify({ ok: false, error: 'Invalid payload' }));
         }
-        console.log(`[RUN] type=${type}, length=${code.length}`);
+        if (type === 'js') {
+          //put run commands here----------------------------------//
+          return subProcess.exec(
+            `echo 'print("Hi from Docker")' | docker run --rm -i python:3.12 python`,//
+            (err, stdout, stderr) => {  //
+            //------------------------------------------------------//  
+            if (err) {
+              res.writeHead(500, { 'Content-Type': 'application/json' });
+              return res.end(JSON.stringify({ ok: false, error: err.message }));
+            }
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ ok: true, output: stdout.toString() }));
+          });
+        }
+        // html/css: still respond
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({
-          ok: true,
-          type,
-          code
-        }));
-      } 
-      //error handling
-      catch (e) {
+        return res.end(JSON.stringify({ ok: true, output: '' }));
+      } catch {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ ok: false, error: 'Bad JSON' }));
       }
@@ -82,5 +90,5 @@ const server = http.createServer((req, res) => {
 });
 server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/`);
-  console.log('All set!! (^-^');
+  console.log('All set!! (^-^)');
 });
