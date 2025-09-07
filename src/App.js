@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import Button from './components/Button';
 import Editor from './components/Editor';
@@ -37,11 +36,11 @@ function App() {
     <div className="App">
       <h1 className="app-title">Thinh's online IDE</h1>
       <div className="tab-button-container">
-        <Button title="HTML" onClick={() => onTabClick('html')} />
-        <Button title="CSS" onClick={() => onTabClick('css')} />
-        <Button title="JavaScript" onClick={() => onTabClick('js')} />
-        <Button title="Python" onClick={() => onTabClick('python')} />
-        <Button title="C++" onClick={() => onTabClick('cpp')} />
+        <Button title="HTML" onClick={() => onTabClick('html')} isActive={openedEditor === 'html'} />
+        <Button title="CSS" onClick={() => onTabClick('css')} isActive={openedEditor === 'css'} />
+        <Button title="JavaScript" onClick={() => onTabClick('js')} isActive={openedEditor === 'js'} />
+        <Button title="Python" onClick={() => onTabClick('python')} isActive={openedEditor === 'python'} />
+        <Button title="C++" onClick={() => onTabClick('cpp')} isActive={openedEditor === 'cpp'} />
       </div>
       <div>
         <RunButton 

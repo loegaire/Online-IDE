@@ -51,9 +51,13 @@
 .editor-container .CodeMirror-scroll {
   min-height: 65vh;        /* ensure the scroll area matches */
 }
+/* Bigger code font and matching line-height */
 .editor-container .CodeMirror pre {
-  font-size: 15px;         /* optional: bigger text */
-  line-height: 1.5;
+  font-size: 20px;    /* adjust to taste */
+  line-height: 1.6;
+}
+.editor-container .CodeMirror-linenumbers {
+  font-size: 18px;
 }
 .output-container {
   text-align: left;
@@ -68,9 +72,28 @@
   font-size: 14px;
   overflow: auto;
 }
+.btn {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  max-width: 140px;
+  min-width: 80px;
+  height: 30px;
+  margin-right: 5px;
+  background-color: #111411ee;
+  color: #b6f1c5ff;
+  border: 1px solid #b6f1c5ff;
+  border-radius: 7px;
+  cursor: pointer;
+}
 .btn:hover {
-    background-color: #aef7acff;
-    color: black;
+  background-color: #aef7acff;
+  color: black;
+}
+.btn.btn--active {
+  background-color: #aef7acff; /* same as hover for clarity */
+  color: black;
+  border-color: #aef7acff;
 }
 @keyframes App-logo-spin {
   from {
@@ -108,7 +131,7 @@
 .runbutton {
   max-width: 140px; 
   min-width: 80px; 
-  height: 30px; 
+  height: 2.5rem; 
   margin-right: 5px;
   background-color: #1e1e1ee5;
   color: #aef7acff;
@@ -116,3 +139,10 @@
   border-radius: 4px;
   cursor: pointer;
 }
+.runbutton:hover {
+    background-color: #aef7acff;
+    color: black;
+}
+
+/* Optional: match gutter (line numbers) */
+

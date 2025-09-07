@@ -18,7 +18,7 @@ const RunButton = ({type, code, onResult}) => {
   };
   return (
     <div>
-      <button style={{ maxWidth: "140px", minWidth: "80px", height: "30px", marginRight: "5px" }}
+      <button className="runbutton"
               onClick={handleClick}>
         Run {type.toUpperCase()}
       </button>
